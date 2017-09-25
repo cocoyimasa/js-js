@@ -1,9 +1,7 @@
 /**
  * Created by shenwudi on 2017/9/24.
  */
-import utils from './utils.js'
-
-var log = console.log.bind(console)
+import { log } from './utils.js'
 /*
 *keywords:
 * break else new var typeof
@@ -94,7 +92,7 @@ var tokenizer = function (source,debug) {
     var spaceExp = /^\s+/
     var numExp = /^\d+/
     var identExp = /^[a-zA-Z0-9_$]+/
-    var strExp = /^[\".*\" | \'.*\']/
+    var strExp = /^"(?:\\.|[^"])*"|^'(?:\\.|[^'])*'/ //(?:)非捕获组--括号里的内容不捕获
 
     var regexps = []
 

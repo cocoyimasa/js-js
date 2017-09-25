@@ -36,7 +36,7 @@ var __main = function () {
         ['if','(','x','==','10000',')','{','return','true','}'])
     testcase('string while test',
         debugTokenizer('var x = "x";y=10000;while(x){} '),
-        ['var','x','=','"','x','"',';','y','=',
+        ['var','x','=','"x"',';','y','=',
             '10000',';','while','(','x',')',
             '{','}'
         ])
@@ -44,7 +44,8 @@ var __main = function () {
         debugTokenizer('function(x,y){m(c,x,y);}'),
         ['function','(','x',',','y',')','{','m',
         '(','c',',','x',',','y',')',';','}'])
-    var parser = new Parser([1])
+    var tokens = Lexer.tokenizer('"test"')
+    var parser = new Parser(tokens)
     parser.parse()
 }
 

@@ -3,7 +3,7 @@
  */
 var $$ = {}
 
-$$.log = console.log.bind(console)
+var log = console.log.bind(console)
 
 $$.extend = function (dest,src) {
     var keys = Object.keys(src)
@@ -13,4 +13,7 @@ $$.extend = function (dest,src) {
     }
 }
 
-export default $$
+export {
+    log,
+    $$,
+}
