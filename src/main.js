@@ -2,6 +2,7 @@
  * Created by shenwudi on 2017/9/24.
  */
 import Lexer from './lexer.js'
+import Parser from './parser.js'
 
 var Exception = function (index,msg) {
     this.index = index
@@ -24,23 +25,27 @@ var testcase = function(name,scope,values){
 }
 
 var __main = function () {
+    var debugTokenizer = function (src) {
+        return Lexer.tokenizer(src,true)
+    }
     testcase('var test',
-        Lexer.tokenizer('var x = 10'),
+        debugTokenizer('var x = 10'),
         ['var','x','=','10'])
     testcase('bool if test',
-        Lexer.tokenizer('if(x==10000){return true}'),
+        debugTokenizer('if(x==10000){return true}'),
         ['if','(','x','==','10000',')','{','return','true','}'])
     testcase('string while test',
-        Lexer.tokenizer('var x = "x";y=10000;while(x){} '),
-        ['var','x','=','"x"',';','y','=',
+        debugTokenizer('var x = "x";y=10000;while(x){} '),
+        ['var','x','=','"','x','"',';','y','=',
             '10000',';','while','(','x',')',
             '{','}'
         ])
     testcase('function test',
-        Lexer.tokenizer('function(x,y){m(c,x,y);}'),
+        debugTokenizer('function(x,y){m(c,x,y);}'),
         ['function','(','x',',','y',')','{','m',
         '(','c',',','x',',','y',')',';','}'])
-
+    var parser = new Parser([1])
+    parser.parse()
 }
 
 __main()

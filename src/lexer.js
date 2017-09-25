@@ -82,17 +82,18 @@ var TokenType = {
 }
 
 class Token{
-    constructor(line,column,type){
+    constructor(line,column,type,value){
         this.line = line
         this.column = column
         this.type = type
+        this.value = value
     }
 }
 
-var tokenizer = function (source) {
+var tokenizer = function (source,debug) {
     var spaceExp = /^\s+/
     var numExp = /^\d+/
-    var indentExp = /^[a-zA-Z0-9_$]+/
+    var identExp = /^[a-zA-Z0-9_$]+/
     var strExp = /^[\".*\" | \'.*\']/
 
     var regexps = []
@@ -102,39 +103,61 @@ var tokenizer = function (source) {
 
     for(let i=0;i<opKeys.length;i++){
         // console.log(Operator[opKeys[i]])
-        let x = new RegExp('^'+Operator[opKeys[i]])
-        regexps.push(x)
+        let k = opKeys[i]
+        let x = new RegExp('^'+Operator[k])
+        regexps.push([k , x])
     }
 
     for(let i=0;i<kwKeys.length;i++){
         // console.log(Keywords[kwKeys[i]])
-        let x = new RegExp('^'+Keywords[kwKeys[i]])
-        regexps.push(x)
+        let k = kwKeys[i]
+        let x = new RegExp('^'+Keywords[k])
+        regexps.push([k , x])
     }
 
-    regexps.push(numExp)
-    regexps.push(indentExp)
-    regexps.push(strExp)
-    regexps.push(spaceExp)
+    regexps.push(['number',numExp])
+    regexps.push(['ident',identExp])
+    regexps.push(['string',strExp])
+    regexps.push(['space',spaceExp])
 
     var src = source
+    var debugRes = []
     var tokens = []
+    var line = 0
+    var column = 0
     while(src != ''){
         regexps.map(function (v,k) {
-            if(v.test(src)){
-                var res = src.match(v)[0]
-                if(res.trim() != ''){
-                    tokens.push(res)
+            let regex = v[1]
+            if(regex.test(src)){
+                var res = src.match(regex)[0]
+                if(res == '\n' || res == '\r\n'){
+                    line++
+                    column = 0
+                }
+                column += res.length
+                if(res.trim() != '' && res != '\n' && res != '\r\n'){
+                    var token = new Token(line,column,v[0],res)
+                    tokens.push(token)
+                    debugRes.push(res)
                 }
                 src = src.slice(res.length)
             }
         })
     }
 
-    log(tokens)
-    return tokens
+    if(debug){
+        log(debugRes)
+        return debugRes
+    }
+    else{
+        log(tokens)
+        return tokens
+    }
 }
 
 export default {
-    tokenizer
+    tokenizer,
+    Keywords,
+    Operator,
+    Token,
 }
